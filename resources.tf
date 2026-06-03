@@ -1,22 +1,42 @@
+# resource "aws_instance" "web" {
+#   depends_on = [aws_key_pair.my_key_pair, aws_security_group.webserver_sg ]
+#   ami   = data.aws_ami.latest_amazon_linux.id
+#   instance_type = var.instanceType
+#   tags = {
+#     Name = "${var.instanceTagName}"
+#   }
+#   key_name = aws_key_pair.jenkins_key.key_name
+#   vpc_security_group_ids = [aws_security_group.webserver_sg.id]
+
+#   provisioner "local-exec" {
+#     command = "echo 'resource exectued succesfully created'"
+#   }
+# }
+
+# resource "aws_key_pair" "jenkins_key" {
+#   # key_name   = "nothing"
+#   key_name   = "jenkins-imported-key"
+#   # public_key = file("./nothing.pub")
+#   public_key = var.public_key_material
+# }
+
 resource "aws_instance" "web" {
-  depends_on = [aws_key_pair.my_key_pair, aws_security_group.webserver_sg ]
-  ami   = data.aws_ami.latest_amazon_linux.id
-  instance_type = var.instanceType
+  ami                    = data.aws_ami.latest_amazon_linux.id
+  instance_type          = var.instanceType
+  key_name               = aws_key_pair.jenkins_key.key_name
+  vpc_security_group_ids = [aws_security_group.webserver_sg.id]
+
   tags = {
     Name = "${var.instanceTagName}"
   }
-  key_name = aws_key_pair.jenkins_key.key_name
-  vpc_security_group_ids = [aws_security_group.webserver_sg.id]
 
   provisioner "local-exec" {
-    command = "echo 'resource exectued succesfully created'"
+    command = "echo 'resource executed successfully created'"
   }
 }
 
 resource "aws_key_pair" "jenkins_key" {
-  # key_name   = "nothing"
   key_name   = "jenkins-imported-key"
-  # public_key = file("./nothing.pub")
   public_key = var.public_key_material
 }
 

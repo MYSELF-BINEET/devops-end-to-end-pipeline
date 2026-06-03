@@ -1,5 +1,9 @@
 pipeline {
     agent {label "pipeline_node"}
+    environment {
+        // Automatically maps the Jenkins secret text to your Terraform variable: var.public_key_material
+        TF_VAR_public_key_material = credentials('ec2-public-key') 
+    }
     stages {
         stage('Git') {
             steps {
@@ -54,14 +58,14 @@ pipeline {
         stage("Create Infrastructure for PROD"){
             steps{
             sh "terraform init --upgrade"
-            script {
-                    // Safe Import Method: Catches the error if the key is already imported, preventing a pipeline crash
-                    try {
-                        sh 'terraform import aws_key_pair.jenkins_key jenkins-imported-key'
-                    } catch (Exception e) {
-                        echo "Key pair 'jenkins-imported-key' already exists in the state file. Skipping import."
-                    }
-                }
+            // script {
+            //         // Safe Import Method: Catches the error if the key is already imported, preventing a pipeline crash
+            //         try {
+            //             sh 'terraform import aws_key_pair.jenkins_key jenkins-imported-key'
+            //         } catch (Exception e) {
+            //             echo "Key pair 'jenkins-imported-key' already exists in the state file. Skipping import."
+            //         }
+            //     }
             sh "terraform apply --auto-approve"
             sh "sleep 30" //giving some time for infrastructure to be up and running..
             echo "Infrastructure is up and running.."
