@@ -1,7 +1,7 @@
 # --------------------------------------------------------
 # VPC
 # --------------------------------------------------------
-resource "aws_vpc" "myVpc" {
+resource "aws_vpc" "myVpc-v2" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
 
@@ -14,7 +14,7 @@ resource "aws_vpc" "myVpc" {
 # Public Subnets
 # --------------------------------------------------------
 resource "aws_subnet" "publicSubnet1" {
-  vpc_id                  = aws_vpc.myVpc.id
+  vpc_id                  = aws_vpc.myVpc-v2.id
   cidr_block              = "10.0.3.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
@@ -25,7 +25,7 @@ resource "aws_subnet" "publicSubnet1" {
 }
 
 resource "aws_subnet" "publicSubnet2" {
-  vpc_id                  = aws_vpc.myVpc.id
+  vpc_id                  = aws_vpc.myVpc-v2.id
   cidr_block              = "10.0.4.0/24"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
@@ -39,7 +39,7 @@ resource "aws_subnet" "publicSubnet2" {
 # Private Subnets
 # --------------------------------------------------------
 resource "aws_subnet" "privateSubnet1" {
-  vpc_id            = aws_vpc.myVpc.id
+  vpc_id            = aws_vpc.myVpc-v2.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-1a"
 
@@ -49,7 +49,7 @@ resource "aws_subnet" "privateSubnet1" {
 }
 
 resource "aws_subnet" "privateSubnet2" {
-  vpc_id            = aws_vpc.myVpc.id
+  vpc_id            = aws_vpc.myVpc-v2.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-1b"
 
@@ -62,7 +62,7 @@ resource "aws_subnet" "privateSubnet2" {
 # Internet Gateway & Public Routing
 # --------------------------------------------------------
 resource "aws_internet_gateway" "myInternetGateway" {
-  vpc_id = aws_vpc.myVpc.id
+  vpc_id = aws_vpc.myVpc-v2.id
 
   tags = {
     Name = "myInternetGateway"
@@ -70,7 +70,7 @@ resource "aws_internet_gateway" "myInternetGateway" {
 }
 
 resource "aws_route_table" "publicRouteTable" {
-  vpc_id = aws_vpc.myVpc.id
+  vpc_id = aws_vpc.myVpc-v2.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -139,7 +139,7 @@ resource "aws_nat_gateway" "nat2" {
 # Private Routing
 # --------------------------------------------------------
 resource "aws_route_table" "privateRouteTable1" {
-  vpc_id = aws_vpc.myVpc.id
+  vpc_id = aws_vpc.myVpc-v2.id
 
   route {
     cidr_block     = "0.0.0.0/0"
