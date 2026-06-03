@@ -18,6 +18,7 @@ data "aws_ami" "latest_amazon_linux" {
   }
 }
 
-data "aws_vpcs" "default_vpc" {
+data "aws_vpc" "default" {
+  default = true
 }
  
