@@ -152,7 +152,7 @@ resource "aws_route_table" "privateRouteTable1" {
 }
 
 resource "aws_route_table" "privateRouteTable2" {
-  vpc_id = aws_vpc.myVpc.id
+  vpc_id = aws_vpc.myVpc-v2.id
 
   route {
     cidr_block     = "0.0.0.0/0"
