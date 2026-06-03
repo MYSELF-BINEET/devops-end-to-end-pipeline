@@ -9,7 +9,7 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.webserver_sg.id]
 
   provisioner "local-exec" {
-    command = "echo 'resource exectued succesfully'"
+    command = "echo 'resource exectued succesfully created'"
   }
 }
 
