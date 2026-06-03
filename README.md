@@ -78,5 +78,5 @@ Get the Grafana dashboard at port no 3000 on your server
 
 - ![Grafana Dashboard Monitoring K8s Cluster](Screenshots/GrafanaView.png)
 
-Connect with me on LinkedIn in any kind of challenges - [Linkedin](https://www.linkedin.com/in/sudhanshu--pandey/)
+Connect with me on LinkedIn in any kind of challenges - [Linkedin](https://www.linkedin.com/in/myself-bineet/)
 
