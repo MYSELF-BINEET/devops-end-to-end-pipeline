@@ -20,3 +20,9 @@ variable "amiID"{
 variable "sg_name"{
     default = "WebserverSgnew"
 }
+
+
+variable "public_key_material" {
+  type        = string
+  description = "The public key material supplied securely by Jenkins"
+}

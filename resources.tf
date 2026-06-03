@@ -5,7 +5,7 @@ resource "aws_instance" "web" {
   tags = {
     Name = "${var.instanceTagName}"
   }
-  key_name = aws_key_pair.my_key_pair.key_name
+  key_name = aws_key_pair.jenkins_key.key_name
   vpc_security_group_ids = [aws_security_group.webserver_sg.id]
 
   provisioner "local-exec" {
@@ -13,9 +13,11 @@ resource "aws_instance" "web" {
   }
 }
 
-resource "aws_key_pair" "my_key_pair" {
-  key_name   = "nothing"
-  public_key = file("./nothing.pub")
+resource "aws_key_pair" "jenkins_key" {
+  # key_name   = "nothing"
+  key_name   = "jenkins-imported-key"
+  # public_key = file("./nothing.pub")
+  public_key = var.public_key_material
 }
 
 resource "aws_security_group" "webserver_sg" {
