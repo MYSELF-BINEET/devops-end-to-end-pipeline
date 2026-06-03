@@ -53,10 +53,19 @@ pipeline {
         }
         stage("Create Infrastructure for PROD"){
             steps{
-                // CHANGED: Added -upgrade to refresh the provider lock file with new signatures
-                sh "terraform init -upgrade"
-                sh "terraform apply --auto-approve"
-                sh "sleep 30" //giving some time for infrastructure to be up and running..
+                // Pull the private key from Jenkins credentials
+                withCredentials([file(credentialsId: 'nothing', variable: 'PRIVATE_KEY')]) {
+                    sh '''
+                        # Generate the public key from the injected private key 
+                        # and save it as exactly what Terraform is looking for
+                        ssh-keygen -y -f $PRIVATE_KEY > ./nothing.pub
+                        
+                        # Now run Terraform
+                        terraform init -upgrade
+                        terraform apply --auto-approve
+                        sleep 30
+                    '''
+                }
                 echo "Infrastructure is up and running.."
             }
         }
