@@ -85,7 +85,7 @@ pipeline {
 
                         ansible-playbook \
                             -i inventory \
-                            -u $SSH_USER \
+                            -u ec2-user \
                             --private-key=$SSH_KEY \
                             k8s_cluster.yml
                     '''
@@ -109,7 +109,7 @@ pipeline {
 
                         ansible-playbook \
                             -i inventory \
-                            -u $SSH_USER \
+                            -u ec2-user \
                             --private-key=$SSH_KEY \
                             prometheus-grafana.yml
                     '''
@@ -133,7 +133,7 @@ pipeline {
 
                         ansible-playbook \
                             -i inventory \
-                            -u $SSH_USER \
+                            -u ec2-user \
                             --private-key=$SSH_KEY \
                             deployDeployment.yml
                     '''
