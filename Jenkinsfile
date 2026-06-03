@@ -18,9 +18,10 @@ pipeline {
         stage("Setup Terraform") {
             steps {
                 script {
-                    if (!fileExists('terraform_1.6.0_linux_amd64.zip')) {
-                        sh 'wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip'
-                        sh 'unzip -o terraform_1.6.0_linux_amd64.zip'
+                    // CHANGED: Upgraded from 1.6.0 to 1.9.0 to resolve the expired GPG key issue
+                    if (!fileExists('terraform_1.9.0_linux_amd64.zip')) {
+                        sh 'wget https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_linux_amd64.zip'
+                        sh 'unzip -o terraform_1.9.0_linux_amd64.zip'
                         sh 'sudo mv terraform /usr/local/bin/'
                     } else {
                         echo 'Terraform zip file already exists. Skipping download.'
@@ -52,10 +53,11 @@ pipeline {
         }
         stage("Create Infrastructure for PROD"){
             steps{
-            sh "terraform init"
-            sh "terraform apply --auto-approve"
-            sh "sleep 30" //giving some time for infrastructure to be up and running..
-            echo "Infrastructure is up and running.."
+                // CHANGED: Added -upgrade to refresh the provider lock file with new signatures
+                sh "terraform init -upgrade"
+                sh "terraform apply --auto-approve"
+                sh "sleep 30" //giving some time for infrastructure to be up and running..
+                echo "Infrastructure is up and running.."
             }
         }
         stage("Configure k8s cluster on the created infrastructure "){
