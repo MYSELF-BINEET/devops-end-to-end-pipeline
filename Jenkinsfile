@@ -1,5 +1,5 @@
 pipeline {
-    agent {label "pipeline_node"}
+    agent {label "ec2"}
     stages {
         stage('Git') {
             steps {
@@ -27,8 +27,8 @@ pipeline {
                     }
                 }
             sh "terraform --version"
-            sh "aws configure set aws_access_key_id "  // add aws access key id and secret access key here
-            sh  "aws configure set aws_secret_access_key " // add aws access key id and secret access key here
+            sh "aws configure set aws_access_key_id "
+            sh  "aws configure set aws_secret_access_key "
             }
         }
         stage("Create Infrastructure for PROD"){
