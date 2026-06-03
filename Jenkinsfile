@@ -84,7 +84,7 @@ pipeline {
                         chmod 400 $SSH_KEY
 
                         ansible-playbook \
-                            -i inventory.ini \
+                            -i inventory \
                             -u $SSH_USER \
                             --private-key=$SSH_KEY \
                             k8s_cluster.yml
@@ -108,7 +108,7 @@ pipeline {
                         chmod 400 $SSH_KEY
 
                         ansible-playbook \
-                            -i inventory.ini \
+                            -i inventory \
                             -u $SSH_USER \
                             --private-key=$SSH_KEY \
                             prometheus-grafana.yml
@@ -132,7 +132,7 @@ pipeline {
                         chmod 400 $SSH_KEY
 
                         ansible-playbook \
-                            -i inventory.ini \
+                            -i inventory \
                             -u $SSH_USER \
                             --private-key=$SSH_KEY \
                             deployDeployment.yml
