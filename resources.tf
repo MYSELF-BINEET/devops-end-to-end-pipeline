@@ -22,7 +22,7 @@ resource "aws_key_pair" "jenkins_key" {
 resource "aws_security_group" "webserver_sg" {
   name        = var.sg_name
   description = "Webserver Security Group Allow port 80"
-  vpc_id      = aws_vpc.myVpc.id
+  vpc_id      = aws_vpc.myVpc-v2.id
 
   dynamic "ingress" {
     for_each = [80, 22, 8080, 3000, 9090]
