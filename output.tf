@@ -6,6 +6,3 @@ output "output1"{
     value = var.x
 }
 
-output "vpc_id"{
-    value = data.aws_vpcs.default_vpc
-}
