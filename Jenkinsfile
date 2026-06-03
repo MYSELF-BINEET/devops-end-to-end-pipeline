@@ -71,16 +71,20 @@ pipeline {
             echo "Infrastructure is up and running.."
             }
         }
-        stage("Configure k8s cluster on the created infrastructure "){
-            steps{
+        stage("Configure k8s cluster on the created infrastructure") {
+            steps {
                 withCredentials([file(credentialsId: 'nothing', variable: 'SSH_KEY')]) {
-                sh '''
-                    chmod 400 $SSH_KEY
-                    ls -l $SSH_KEY
-                '''
-            }
-                sh "ansible-playbook k8s_cluster.yml"
-                echo "K8s minikube cluster configured succesfully!"
+                    sh '''
+                        chmod 400 $SSH_KEY
+
+                        ansible-playbook \
+                            -i inventory.ini \
+                            --private-key=$SSH_KEY \
+                            k8s_cluster.yml
+                    '''
+                }
+
+                echo "K8s cluster configured successfully!"
             }
         }
         stage("Configure Monitoring Tool"){
