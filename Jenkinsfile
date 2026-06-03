@@ -27,8 +27,16 @@ pipeline {
                     }
                 }
             sh "terraform --version"
-            sh "aws configure set aws_access_key_id "  // add aws access key id and secret access key here
-            sh  "aws configure set aws_secret_access_key " // add aws access key id and secret access key here
+            withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                        aws configure set default.region ap-south-1
+                    '''
+                }
             }
         }
         stage("Create Infrastructure for PROD"){
@@ -41,7 +49,12 @@ pipeline {
         }
         stage("Configure k8s cluster on the created infrastructure "){
             steps{
-                sh "chmod 400 mykey"
+                withCredentials([file(credentialsId: 'nothing', variable: 'SSH_KEY')]) {
+                sh '''
+                    chmod 400 $SSH_KEY
+                    ls -l $SSH_KEY
+                '''
+            }
                 sh "ansible-playbook k8s_cluster.yml"
                 echo "K8s minikube cluster configured succesfully!"
             }
