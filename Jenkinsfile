@@ -73,18 +73,25 @@ pipeline {
         }
         stage("Configure k8s cluster on the created infrastructure") {
             steps {
-                withCredentials([file(credentialsId: 'nothing', variable: 'SSH_KEY')]) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'nothing',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
                     sh '''
                         chmod 400 $SSH_KEY
 
                         ansible-playbook \
                             -i inventory.ini \
+                            -u $SSH_USER \
                             --private-key=$SSH_KEY \
                             k8s_cluster.yml
                     '''
                 }
 
-                echo "K8s cluster configured successfully!"
+                echo "K8s minikube cluster configured successfully!"
             }
         }
         stage("Configure Monitoring Tool"){
