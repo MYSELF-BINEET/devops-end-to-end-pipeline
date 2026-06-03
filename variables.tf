@@ -1,6 +1,6 @@
 variable "instanceType" {
   type    = string
-  default = "t2.medium"
+  default = "t3.medium"
 }
 
 variable "x" {
