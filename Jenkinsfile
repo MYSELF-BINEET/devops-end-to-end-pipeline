@@ -15,19 +15,25 @@ pipeline {
                 echo "Ansible Installed"
         }
         }
-        stage("Setup Terraform"){
-            steps{
+        stage("Setup Terraform") {
+            steps {
                 script {
                     if (!fileExists('terraform_1.6.0_linux_amd64.zip')) {
                         sh 'wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip'
-                        sh "unzip terraform_1.6.0_linux_amd64.zip"
-                        sh "mv terraform /usr/local/bin/"
+                        sh 'unzip -o terraform_1.6.0_linux_amd64.zip'
+                        sh 'sudo mv terraform /usr/local/bin/'
                     } else {
                         echo 'Terraform zip file already exists. Skipping download.'
                     }
                 }
-            sh "terraform --version"
-            withCredentials([
+
+                sh 'terraform --version'
+            }
+        }
+
+        stage("Configure AWS Credentials") {
+            steps {
+                withCredentials([
                     usernamePassword(
                         credentialsId: 'aws-access-key-id',
                         usernameVariable: 'AWS_ACCESS_KEY_ID',
@@ -37,6 +43,9 @@ pipeline {
                     sh '''
                         aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
                         aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                        aws configure set default.region ap-south-1
+
+                        aws sts get-caller-identity
                     '''
                 }
             }
