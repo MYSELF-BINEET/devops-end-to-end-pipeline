@@ -43,24 +43,34 @@ resource "aws_security_group" "webserver_sg" {
   }
 }
 
-resource "null_resource" "configureAnsibleInventory" {
-  triggers = {
-    mytrigger = timestamp()
-  }
+# resource "null_resource" "configureAnsibleInventory" {
+#   triggers = {
+#     mytrigger = timestamp()
+#   }
   
-  provisioner "local-exec" {
-    command = "echo [prod] > inventory"
-  }
-}
+#   provisioner "local-exec" {
+#     command = "echo [prod] > inventory"
+#   }
+# }
 
-resource "null_resource" "configureansibleinventoryIPdetails" {
-  triggers = {
-    mytrigger = timestamp()
-  }
+# resource "null_resource" "configureansibleinventoryIPdetails" {
+#   triggers = {
+#     mytrigger = timestamp()
+#   }
   
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.web.public_ip} ansible_user=ec2-user ansible_ssh_private_key_file=mykey >> inventory"
-  }
+#   provisioner "local-exec" {
+#     command = "echo ${aws_instance.web.public_ip} ansible_user=ec2-user ansible_ssh_private_key_file=mykey >> inventory"
+#   }
+# }
+resource "local_file" "inventory" {
+  filename = "inventory"
+
+  content = <<EOT
+[prod]
+${aws_instance.web.public_ip} ansible_user=ec2-user
+EOT
+
+  depends_on = [aws_instance.web]
 }
 
 resource "null_resource" "destroy_resource" {
