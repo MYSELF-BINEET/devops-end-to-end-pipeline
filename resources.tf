@@ -14,8 +14,8 @@ resource "aws_instance" "web" {
 }
 
 resource "aws_key_pair" "my_key_pair" {
-  key_name   = "testkeygfg123"
-  public_key = file("./mykey.pub")
+  key_name   = "nothing"
+  public_key = file("./nothing.pub")
 }
 
 resource "aws_security_group" "webserver_sg" {
