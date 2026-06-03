@@ -94,17 +94,55 @@ pipeline {
                 echo "K8s minikube cluster configured successfully!"
             }
         }
-        stage("Configure Monitoring Tool"){
-            steps{
-                sh "ansible-playbook prometheus-grafana.yml"
-                echo "Monitoring tool configured succesfully!"
+
+        stage("Configure Monitoring Tool") {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'nothing',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        chmod 400 $SSH_KEY
+
+                        ansible-playbook \
+                            -i inventory.ini \
+                            -u $SSH_USER \
+                            --private-key=$SSH_KEY \
+                            prometheus-grafana.yml
+                    '''
+                }
+
+                echo "Monitoring tool configured successfully!"
             }
         }
-        stage("Deploy the Webserver"){
-            steps{
-                sh "ansible-playbook deployDeployment.yml"
+
+        stage("Deploy the Webserver") {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'nothing',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        chmod 400 $SSH_KEY
+
+                        ansible-playbook \
+                            -i inventory.ini \
+                            -u $SSH_USER \
+                            --private-key=$SSH_KEY \
+                            deployDeployment.yml
+                    '''
+                }
+
                 sh "chmod +x startservers.sh"
-                echo "Create a Socat to connect to our webserver from the Internet(from the outside of ec2 Instance)"
+
+                echo "Create a Socat to connect to our webserver from the Internet (from outside the EC2 instance)"
+
                 sh "./startservers.sh"
             }
         }
