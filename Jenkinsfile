@@ -53,20 +53,18 @@ pipeline {
         }
         stage("Create Infrastructure for PROD"){
             steps{
-                // Pull the private key from Jenkins credentials
-                withCredentials([file(credentialsId: 'nothing', variable: 'PRIVATE_KEY')]) {
-                    sh '''
-                        # Generate the public key from the injected private key 
-                        # and save it as exactly what Terraform is looking for
-                        ssh-keygen -y -f $PRIVATE_KEY > ./nothing.pub
-                        
-                        # Now run Terraform
-                        terraform init -upgrade
-                        terraform apply --auto-approve
-                        sleep 30
-                    '''
+            sh "terraform init --upgrade"
+            script {
+                    // Safe Import Method: Catches the error if the key is already imported, preventing a pipeline crash
+                    try {
+                        sh 'terraform import aws_key_pair.jenkins_key jenkins-imported-key'
+                    } catch (Exception e) {
+                        echo "Key pair 'jenkins-imported-key' already exists in the state file. Skipping import."
+                    }
                 }
-                echo "Infrastructure is up and running.."
+            sh "terraform apply --auto-approve"
+            sh "sleep 30" //giving some time for infrastructure to be up and running..
+            echo "Infrastructure is up and running.."
             }
         }
         stage("Configure k8s cluster on the created infrastructure "){
