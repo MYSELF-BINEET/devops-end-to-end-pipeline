@@ -1,5 +1,5 @@
 pipeline {
-    agent {label "ec2"}
+    agent {label "pipeline_node"}
     stages {
         stage('Git') {
             steps {
