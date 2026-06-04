@@ -143,7 +143,20 @@ pipeline {
 
                 echo "Create a Socat to connect to our webserver from the Internet (from outside the EC2 instance)"
 
-                sh "./startservers.sh"
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'nothing',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        export SSH_KEY="$SSH_KEY"
+                        export SSH_USER="$SSH_USER"
+
+                        ./startservers.sh
+                    '''
+                }
             }
         }
     }
