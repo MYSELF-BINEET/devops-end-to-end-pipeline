@@ -72,10 +72,10 @@ resource "local_file" "inventory" {
 
   content = <<EOT
 [prod]
-${aws_instance.web.public_ip} ansible_user=ec2-user
+${aws_eip.web_eip.public_ip} ansible_user=ec2-user
 EOT
 
-  depends_on = [aws_instance.web]
+  depends_on = [aws_eip.web_eip]
 }
 
 resource "null_resource" "destroy_resource" {
