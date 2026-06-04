@@ -173,3 +173,12 @@ resource "aws_route_table_association" "privateSubnet2Association" {
   subnet_id      = aws_subnet.privateSubnet2.id
   route_table_id = aws_route_table.privateRouteTable2.id
 }
+
+
+resource "aws_eip" "web_eip" {
+  domain = "vpc"
+
+  tags = {
+    Name = "web-eip"
+  }
+}

@@ -19,6 +19,11 @@ resource "aws_key_pair" "jenkins_key" {
   public_key = var.public_key_material
 }
 
+resource "aws_eip_association" "web_eip_assoc" {
+  instance_id   = aws_instance.web.id
+  allocation_id = aws_eip.web_eip.id
+}
+
 resource "aws_security_group" "webserver_sg" {
   name        = var.sg_name
   description = "Webserver Security Group Allow port 80"
